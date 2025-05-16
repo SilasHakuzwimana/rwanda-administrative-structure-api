@@ -101,7 +101,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "rwanda_db",
         "USER": "root",
-        "PASSWORD": "Bnawn)%!8/+(", #Password: Bnawn)%!8/+(
+        "PASSWORD": "",     #Password: Bnawn)%!8/+(, root = No password
         "HOST": "localhost",
         "PORT": "3308",
         "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},

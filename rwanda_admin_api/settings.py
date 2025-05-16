@@ -99,7 +99,7 @@ WSGI_APPLICATION = "rwanda_admin_api.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "rwanda_db",
+        "NAME": "rwanda_data_db",
         "USER": "root",
         "PASSWORD": "",     #Password: Bnawn)%!8/+(, root = No password
         "HOST": "localhost",

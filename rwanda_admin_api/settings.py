@@ -87,37 +87,37 @@ WSGI_APPLICATION = "rwanda_admin_api.wsgi.application"
 
 # Using SQLite Database
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Using MYSQL Database
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "rwanda_data_db",
-        "USER": "root",
-        "PASSWORD": "",     #Password: Bnawn)%!8/+(, root = No password
-        "HOST": "localhost",
-        "PORT": "3308",
-        "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "",
+#         "USER": "",
+#         "PASSWORD": "",     
+#         "HOST": "",
+#         "PORT": "",
+#         "OPTIONS": {"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"},
+#     }
+# }
 
 # Using PostgreSQL Database
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'rwanda_db',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Silas@0123#',  # use your actual password
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'NAME': '',
+#         'USER': '',
+#         'PASSWORD': '',  
+#         'HOST': '',
+#         'PORT': '',
 #     }
 # }
 

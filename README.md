@@ -132,6 +132,6 @@ This project is licensed under the MIT License.
 
 **Silas HAKUZWIMANA**
 **Phone: +250 783 749 019**
-DevOps Engineer & Full Stack Developer
+DevOps Engineer & Full Stack Engineer
 📧 [hakuzwisilas@gmail.com](mailto:hakuzwisilas@gmail.com)
 🌐 [LinkedIn](https://linkedin.com/in/SilasHakuzwimana)

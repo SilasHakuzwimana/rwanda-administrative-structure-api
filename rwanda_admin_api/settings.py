@@ -10,10 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import pymysql
-pymysql.install_as_MySQLdb()
-
 from pathlib import Path
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,12 +86,12 @@ WSGI_APPLICATION = "rwanda_admin_api.wsgi.application"
 
 # Using SQLite Database
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 # Using MYSQL Database
 
@@ -110,16 +109,16 @@ DATABASES = {
 
 # Using PostgreSQL Database
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': '',
-#         'USER': '',
-#         'PASSWORD': '',  
-#         'HOST': '',
-#         'PORT': '',
-#     }
-# }
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'wars_db',
+         'USER': 'wars_user',
+         'PASSWORD': 'wars_password_2024',  
+         'HOST': 'localhost',
+         'PORT': '5432',
+     }
+ }
 
 LOGGING = {
     "version": 1,

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: your-app-name
+    name: RWANDA_ADMINISTRATIVE_STRUCTURE_APIs
     runtime: python
     buildCommand: pip install --upgrade pip && pip install -r requirements-prod.txt
     startCommand: gunicorn your_project.wsgi:application

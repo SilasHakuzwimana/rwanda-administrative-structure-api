@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: your-app-name
+    runtime: python
+    buildCommand: pip install --upgrade pip && pip install -r requirements-prod.txt
+    startCommand: gunicorn your_project.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10

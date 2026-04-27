@@ -30,3 +30,6 @@ media/
 
 # Render
 render.yaml
+
+# DB Configuration (Prod)
+main.py

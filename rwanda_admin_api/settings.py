@@ -101,9 +101,43 @@ REST_FRAMEWORK = {
 
 # CORS Configuration (for frontend access)
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
+
+# Fix: Handle empty or missing CORS_ALLOWED_ORIGINS
 if not DEBUG:
-    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
+    cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+    if cors_origins:
+        CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+    else:
+        # Default to your Render URL if none provided
+        CORS_ALLOWED_ORIGINS = [
+            'https://rwanda-administrative-api.onrender.com',
+            'http://localhost:3000',
+            'http://127.0.0.1:8000'
+        ]
 CORS_ALLOW_CREDENTIALS = True
+
+# Additional CORS settings (optional)
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

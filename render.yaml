@@ -1,9 +1,26 @@
 services:
   - type: web
-    name: RWANDA_ADMINISTRATIVE_STRUCTURE_APIs
+    name: rwanda-administrative-api
     runtime: python
-    buildCommand: pip install --upgrade pip && pip install -r requirements-prod.txt
-    startCommand: gunicorn your_project.wsgi:application
+    plan: free
+    region: frankfurt
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn rwanda_admin_api.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.10
+      - key: DATABASE_URL
+        sync: false # You'll set this manually in Render dashboard
+        value: DATABASE_URL
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: rwanda-administrative-api.onrender.com,localhost,127.0.0.1
+      - key: DJANGO_SETTINGS_MODULE
+        value: rwanda_admin_api.settings

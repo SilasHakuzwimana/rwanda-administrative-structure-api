@@ -4,18 +4,13 @@ services:
     runtime: python
     plan: free
     region: frankfurt
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
-      python manage.py migrate --noinput
-      python manage.py collectstatic --noinput
+    buildCommand: ./build.sh
     startCommand: gunicorn rwanda_admin_api.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.10
       - key: DATABASE_URL
         sync: false # You'll set this manually in Render dashboard
-        value: DATABASE_URL
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG

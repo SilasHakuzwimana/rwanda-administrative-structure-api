@@ -114,7 +114,7 @@ if not DEBUG:
     else:
         # Default to your Render URL if none provided
         CORS_ALLOWED_ORIGINS = [
-            'https://rwanda-administrative-api.onrender.com',
+            'https://rwanda-administrative-structure-api.onrender.com',
             'http://localhost:3000',
             'http://127.0.0.1:8000'
         ]

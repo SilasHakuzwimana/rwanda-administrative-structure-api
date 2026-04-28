@@ -4,7 +4,7 @@ from .views import *
 
 router = DefaultRouter()
 
-router.register(r"country", CountryViewSet)
+router.register(r"countries", CountryViewSet)
 router.register(r"provinces", ProvinceViewSet)
 router.register(r"districts", DistrictViewSet)
 router.register(r"sectors", SectorViewSet)

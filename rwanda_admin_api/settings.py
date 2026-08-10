@@ -401,3 +401,15 @@ CACHE_MIDDLEWARE_KEY_PREFIX = 'rwanda_api'
 
 SILKY_PYTHON_PROFILER = False  # ✅ Disable Silk's profiler
 SILKY_RECORD_REQUESTS = True   # Keep request recording
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    'SHOW_COLLAPSED': True,
+    'SQL_WARNING_THRESHOLD': 100,
+    # ✅ Disable the profiling panel
+    'DISABLE_PANELS': {
+        'debug_toolbar.panels.profiling.ProfilingPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+    }
+}

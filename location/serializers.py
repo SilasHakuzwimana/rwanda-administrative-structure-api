@@ -1,7 +1,7 @@
 # location/serializers.py
 
 from rest_framework import serializers
-from .models import Country, Province, District, Sector, Cell, Village
+from .models import APICustomer, APIKey, Country, Province, District, Sector, Cell, Village
 from django.contrib.auth.models import User
 
 
@@ -44,3 +44,28 @@ class VillageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Village
         fields = ['id', 'name', 'code', 'cell_name', 'sector_name', 'district_name', 'province_name', 'country_name']
+
+class APICustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = APICustomer
+        fields = ['id', 'email', 'name', 'plan', 'is_active', 'created_at']
+
+
+class APIKeySerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source='customer.name', read_only=True)
+    customer_email = serializers.CharField(source='customer.email', read_only=True)
+    
+    class Meta:
+        model = APIKey
+        fields = [
+            'id', 'customer', 'customer_name', 'customer_email',
+            'name', 'key', 'key_prefix', 'is_active',
+            'created_at', 'last_used_at'
+        ]
+        read_only_fields = ['key', 'key_prefix', 'created_at']
+
+
+class TokenResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    data = serializers.DictField()

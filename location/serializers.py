@@ -39,6 +39,8 @@ class VillageSerializer(serializers.ModelSerializer):
     cell_name = serializers.CharField(source='cell.name', read_only=True)
     sector_name=serializers.CharField(source='cell.sector.name', read_only=True)
     district_name=serializers.CharField(source='cell.sector.district.name', read_only=True)
+    province_name = serializers.CharField(source='cell.sector.district.province.name', read_only=True)
+    country_name = serializers.CharField(source='cell.sector.district.province.country.name', read_only=True)
     class Meta:
         model = Village
-        fields = ['id', 'name', 'code', 'cell_name', 'sector_name', 'district_name']
+        fields = ['id', 'name', 'code', 'cell_name', 'sector_name', 'district_name', 'province_name', 'country_name']

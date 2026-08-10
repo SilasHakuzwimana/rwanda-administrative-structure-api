@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-08-10T19:14:27.841625",
+  "total_records": 15291,
+  "avg_response_ms": 28.133999999999997,
+  "performance_grade": "EXCELLENT",
+  "endpoints": {
+    "/api/v1/villages/?page=1": 29.49,
+    "/api/v1/villages/?page=2": 27.08,
+    "/api/v1/sectors/": 28.31,
+    "/api/v1/districts/": 27.48,
+    "/api/v1/provinces/": 28.31
+  },
+  "database_performance": {
+    "count_ms": 4.84,
+    "select_related_ms": 5.47,
+    "pagination_ms": 1.46
+  }
+}

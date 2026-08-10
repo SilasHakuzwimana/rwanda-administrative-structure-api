@@ -36,3 +36,4 @@ main.py
 
 # Ignore helpers
 helpers/
+performance_test_output/

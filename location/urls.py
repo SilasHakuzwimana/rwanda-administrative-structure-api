@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from .views import *
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=True)
 
 router.register(r"countries", CountryViewSet)
 router.register(r"provinces", ProvinceViewSet)
@@ -11,6 +11,4 @@ router.register(r"sectors", SectorViewSet)
 router.register(r"cells", CellViewSet)
 router.register(r"villages", VillageViewSet)
 
-urlpatterns = [
-    path("", include(router.urls)),
-]
+urlpatterns = router.urls

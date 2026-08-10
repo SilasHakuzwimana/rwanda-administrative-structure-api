@@ -13,3 +13,4 @@ dj-database-url==2.2.0
 # Environment variables
 python-dotenv==1.0.1
 drf-yasg==1.21.7
+stripe==10.12.0

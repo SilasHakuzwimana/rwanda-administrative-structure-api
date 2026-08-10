@@ -1,9 +1,0 @@
-INSERT INTO `cells` (`id`, `name`, `sector_id`) VALUES
-INSERT INTO `sectors` (`id`, `name`, `district_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES
-INSERT INTO `villages` (`id`, `name`, `cell_id`) VALUES

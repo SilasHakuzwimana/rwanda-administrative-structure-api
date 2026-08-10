@@ -1,4 +1,6 @@
 from django.db import models
+import secrets
+import hashlib
 
 # Create your models here.
 
@@ -73,3 +75,81 @@ class Village(models.Model):
         ordering = ['name']
     def __str__(self):
         return self.name
+
+# Customer API Customization
+
+class APICustomer(models.Model):
+    """Customer who subscribes to the API"""
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=200)
+    stripe_customer_id = models.CharField(max_length=100, blank=True)
+    stripe_subscription_id = models.CharField(max_length=100, blank=True)
+    plan = models.CharField(max_length=50, choices=[
+        ('free', 'Free'),
+        ('starter', 'Starter'),
+        ('pro', 'Pro'),
+        ('enterprise', 'Enterprise'),
+    ], default='free')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.name} - {self.plan}"
+
+class APIKey(models.Model):
+    """API keys for customers (each customer can have multiple keys)"""
+    customer = models.ForeignKey(APICustomer, on_delete=models.CASCADE, related_name='api_keys')
+    name = models.CharField(max_length=100, help_text="e.g., Production Key, Testing Key")
+    key = models.CharField(max_length=64, unique=True, editable=False)
+    key_prefix = models.CharField(max_length=8, editable=False)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.key:
+            # Generate a key like: wars_live_xxxxxxxxxxxx
+            self.key_prefix = secrets.token_hex(16)[:8]
+            self.key = f"wars_{self.plan}_{self.key_prefix}"
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"{self.customer.name} - {self.name} ({self.key_prefix})"
+
+class AllowedOrigin(models.Model):
+    """Allowed origins (domains) for each customer"""
+    customer = models.ForeignKey(APICustomer, on_delete=models.CASCADE, related_name='allowed_origins')
+    origin = models.CharField(max_length=255, help_text="e.g., https://myapp.com or http://localhost:3000")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['customer', 'origin']
+    
+    def __str__(self):
+        return f"{self.customer.name} - {self.origin}"
+
+class APIUsage(models.Model):
+    """Track usage per customer for billing"""
+    customer = models.ForeignKey(APICustomer, on_delete=models.CASCADE, related_name='api_usage')
+    date = models.DateField(auto_now_add=True)
+    endpoint = models.CharField(max_length=200)
+    method = models.CharField(max_length=10)
+    status_code = models.IntegerField()
+    origin = models.CharField(max_length=255)
+    request_count = models.IntegerField(default=1)
+    created_at=models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering=['-date', '-created_at']
+        indexes = [
+            models.Index(fields=['customer', 'date']),
+            models.Index(fields=['endpoint']),
+            models.Index(fields=['status_code']),
+            models.Index(fields=['date']),
+            models.Index(fields=['customer', 'date', 'endpoint'])
+        ]
+        unique_together = [['customer', 'date', 'endpoint', 'method']]
+        
+def __str__(self):
+    return f"{self.customer.name} - {self.endpoint} - {self.date}"

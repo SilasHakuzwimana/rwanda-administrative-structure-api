@@ -1,0 +1,67 @@
+<div class="pricing-container">
+  <div class="pricing-card free">
+    <h3>Free</h3>
+    <div class="price">$0<span>/month</span></div>
+    <ul>
+      <li>1,000 requests/month</li>
+      <li>1 allowed origin</li>
+      <li>Basic GET endpoints</li>
+      <li>Email support</li>
+    </ul>
+    <button onclick="subscribe('free')">Get Started</button>
+  </div>
+
+  <div class="pricing-card starter">
+    <h3>Starter</h3>
+    <div class="price">$29<span>/month</span></div>
+    <ul>
+      <li>50,000 requests/month</li>
+      <li>3 allowed origins</li>
+      <li>All endpoints</li>
+      <li>Priority email support</li>
+    </ul>
+    <button onclick="subscribe('starter')">Subscribe</button>
+  </div>
+
+  <div class="pricing-card pro">
+    <h3>Pro</h3>
+    <div class="price">$99<span>/month</span></div>
+    <ul>
+      <li>250,000 requests/month</li>
+      <li>10 allowed origins</li>
+      <li>All features</li>
+      <li>Slack/Discord support</li>
+    </ul>
+    <button onclick="subscribe('pro')">Subscribe</button>
+  </div>
+
+  <div class="pricing-card enterprise">
+    <h3>Enterprise</h3>
+    <div class="price">Custom</div>
+    <ul>
+      <li>Unlimited requests</li>
+      <li>Unlimited origins</li>
+      <li>Custom SLA</li>
+      <li>Dedicated support</li>
+    </ul>
+    <button onclick="contactSales()">Contact Sales</button>
+  </div>
+</div>
+
+<script>
+  function subscribe(plan) {
+    fetch("/api/subscribe/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({ plan: plan }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Redirect to Stripe Checkout
+        window.location.href = `/checkout/${data.subscription_id}/`;
+      });
+  }
+</script>

@@ -36,3 +36,5 @@ twilio==9.3.7
 schedule==1.2.2
 python-dateutil==2.9.0.post0
 pytz==2024.2
+drf-yasg==1.21.7
+stripe==10.12.0

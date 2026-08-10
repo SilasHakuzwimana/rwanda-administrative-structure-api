@@ -39,12 +39,21 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_filters",
     "corsheaders",  # Add this for API access from different origins
+    #'drf-yasg',
+    'django_extensions',
+    'debug_toolbar',
+    'silk',
 ]
 
 MIDDLEWARE = [
+    'silk.middleware.SilkyMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # Add this for static files
     "corsheaders.middleware.CorsMiddleware",  # Add this early
+    "location.middleware.APIAuthenticationMiddleware",  # Add this first
+    "location.middleware.OriginRestrictionMiddleware",  # Add this second
+    "location.middleware.UsageTrackingMiddleware", 
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -53,6 +62,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+MIDDLEWARE.insert(0, 'django.middleware.gzip.GZipMiddleware')
 ROOT_URLCONF = "rwanda_admin_api.urls"
 
 TEMPLATES = [
@@ -93,9 +103,26 @@ else:
             'PASSWORD': os.environ.get('DB_PASSWORD', 'wars_password_2024'),
             'HOST': os.environ.get('DB_HOST', 'localhost'),
             'PORT': os.environ.get('DB_PORT', '5432'),
+            'OPTIONS':{
+                'connect_timeout':5,
+                'options': '-c statement_timeout=30s',
+            },
+            'CONN_MAX_AGE':600, # Keep connection alive for 10 minutes
         }
     }
 
+# Caching
+
+CACHES={
+    'default':{
+        'BACKEND':'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f"redis://:{os.getenv('REDIS_PASSWORD', 'jLzKTqO1eqLs')}@localhost:6379/1",
+        'OPTIONS':{
+            'PASSWORD':os.environ.get('REDIS_PASSWORD'),
+            'CLENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 # REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -106,6 +133,39 @@ REST_FRAMEWORK = {
 # CORS Configuration (for frontend access)
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
 
+#Enable query logging in development
+if DEBUG:
+    LOGGING ={
+        'version':1,
+        'disable_existing_loggers': False,
+        'handlers':{
+            'file':{
+              'level':'INFO',
+              'class':'logging.FileHandler',
+              'filename':'api_performance.log'  
+            },
+            'console':{
+                'class':'logging.StreamHandler'
+            },
+        },
+        'root':{
+            'handlers':['console'],
+            'level':'INFO'
+        },
+        'loggers':{
+            'api.middleware':{
+                'handlers':['file'],
+                'level':'INFO',
+                'propagate':False,
+            }
+        },
+        'loggers':{
+            'django.db.backends':{
+                'level':'DEBUG',
+                'handlers':['console'],
+            }
+        }
+    }
 # Fix: Handle empty or missing CORS_ALLOWED_ORIGINS
 if not DEBUG:
     cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
@@ -165,6 +225,12 @@ TIME_ZONE = "Africa/Kigali"  # Set to Rwanda time
 USE_I18N = True
 USE_TZ = True
 
+# Add Internal APIs
+INTERNAL_APIS =[
+    '127.0.0.1',
+    'localhost'
+]
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -173,6 +239,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Media files (Uploaded files)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Stripe Secret Key
+STRIPE_SECRET_KEY=""
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -195,10 +264,12 @@ LOGGING = {
 # Security settings for production
 if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+    SECURE_PROXY_SSL_HEADER = None
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False') == 'True'
+    CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'False') == 'True'
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 0))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False') == 'True'
+    SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD', 'False') == 'True'
+    SECURE_BROWSER_XSS_FILTER = os.environ.get('SECURE_BROWSER_XSS_FILTER', 'True') == 'True'
+    SECURE_CONTENT_TYPE_NOSNIFF = os.environ.get('SECURE_CONTENT_TYPE_NOSNIFF', 'True') == 'True'

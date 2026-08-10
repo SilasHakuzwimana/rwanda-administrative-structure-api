@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rwanda-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-wars_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-wars_password_2024}
+      POSTGRES_DB: ${DB_NAME:-wars_db}
+      POSTGRES_INITDB_ARGS: "--locale=en_US.UTF-8"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup:/docker-entrypoint-initdb.d
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=128MB
+      -c work_mem=16MB
+      -c max_connections=100
+      -c log_statement=all
+      -c log_duration=on
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-wars_user} -d ${POSTGRES_DB:-wars_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rwanda_network
+
+  redis:
+    image: redis:alpine
+    container_name: rwanda-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: sh -c "redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru --requirepass ${REDIS_PASSWORD}"
+    healthcheck:
+      test: ["CMD", "redis-cli", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - rwanda_network
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: rwanda-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-hakusilas@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - rwanda_network
+
+networks:
+  rwanda_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -21,11 +21,13 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from location.views_subscription import CreateSubscriptionView, ManageAPIKeysView, ManageOriginsView
+
 
 # Swagger/OpenAPI schema view
 schema_view = get_schema_view(
     openapi.Info(
-        title="iTechnology - Rwanda Administrative API",
+        title="Solertia Novarum Ltd - Rwanda Administrative API",
         default_version='v1',
         description="""
         Rwanda Administrative Structure API
@@ -36,17 +38,17 @@ schema_view = get_schema_view(
         - 17,440 total records available
         
         ## Endpoints
-        - Countries: /api/countries/
-        - Provinces: /api/provinces/
-        - Districts: /api/districts/
-        - Sectors: /api/sectors/
-        - Cells: /api/cells/
-        - Villages: /api/villages/
+        - Countries: /api/v1/countries/
+        - Provinces: /api/v1/provinces/
+        - Districts: /api/v1/districts/
+        - Sectors: /api/v1/sectors/
+        - Cells: /api/v1/cells/
+        - Villages: /api/v1/villages/
         """,
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(
-            name="iTechnology Development Team",
-            email="infinitytechnologiesltd8@gmail.com"
+            name="Solertia Novarum Ltd Team",
+            email="info.solertianovarumltd@gmail.com"
         ),
         license=openapi.License(name="Proprietary"),
     ),
@@ -56,11 +58,22 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/", include("location.urls")),
+    path("admin/v1/", admin.site.urls),
+    path("api/v1/", include("location.urls")),
+    
+    # Subscription management (requires authentication)
+    path('api/v1/subscribe/', CreateSubscriptionView.as_view(), name='subscribe'),
+    path('api/v1/keys/', ManageAPIKeysView.as_view(), name='api-keys'),
+    path('api/v1/keys/<int:key_id>/', ManageAPIKeysView.as_view(), name='api-key-delete'),
+    path('api/v1/origins/', ManageOriginsView.as_view(), name='origins'),
+    path('api/v1/origins/<int:origin_id>/', ManageOriginsView.as_view(), name='origin-delete'),
+    
     
     # Swagger documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    
+    path('__debug__/', include('debug_toolbar.urls')),
+    path('silk/', include('silk.urls', namespace='silk')),
 ]
